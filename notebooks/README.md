@@ -73,4 +73,8 @@ The system:
 
 ---
 
-
+| Model              | Accuracy | Precision | Recall |
+|-------------------|----------|----------|--------|
+| Logistic Regression | 86%     | 78%      | 77%   |
+| KNN                | 78%     | 73%      | 49%   |
+| Naive Bayes        | **86.5%** | **80%**  | **73%** |
