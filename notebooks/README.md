@@ -43,9 +43,12 @@ The system:
 
 - Python  
 - NumPy  
-- Pandas  
+- Pandas
+- Seaborn
+- Matplotlib
 - Scikit-learn  
-- Jupyter Notebook  
+- Jupyter Notebook
+  
 
 ---
 
