@@ -1,3 +1,4 @@
+import html
 import os
 
 import joblib
@@ -238,7 +239,7 @@ def inject_styles():
             letter-spacing: -0.02em;
             font-weight: 650;
         }
-        .hero-card, .panel-card {
+        .hero-card, .panel-card, .note-card {
             background: var(--panel);
             border: 1px solid var(--line);
             border-radius: 26px;
@@ -259,6 +260,27 @@ def inject_styles():
             padding: 1.15rem 1.2rem;
             margin-bottom: 1rem;
             background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,251,255,0.94));
+        }
+        .note-card {
+            padding: 1.2rem 1.25rem;
+            background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+            min-height: 100%;
+        }
+        .review-title {
+            color: var(--ink);
+            font-size: 1.25rem;
+            font-weight: 750;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.9rem;
+        }
+        .review-list {
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--ink);
+        }
+        .review-list li {
+            margin-bottom: 0.8rem;
+            line-height: 1.65;
         }
         .eyebrow {
             text-transform: uppercase;
@@ -372,70 +394,30 @@ def inject_styles():
             max-width: 420px;
             text-align: right;
         }
-        .metric-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 0.9rem;
-            margin: 0.2rem 0 1rem 0;
-        }
-        .metric-card {
-            background: linear-gradient(180deg, #ffffff 0%, #f6f9fd 100%);
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            padding: 1rem 1.05rem;
-            min-height: 112px;
-            box-shadow: 0 18px 36px rgba(20, 36, 64, 0.07);
-        }
-        .metric-card .metric-label {
-            color: var(--muted);
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
-        }
-        .metric-card .metric-value {
-            color: var(--ink);
-            font-size: 1.7rem;
-            line-height: 1.1;
-            margin-top: 0.55rem;
-            font-weight: 750;
-            letter-spacing: -0.03em;
-        }
-        .metric-card .metric-foot {
-            margin-top: 0.55rem;
-            color: var(--muted);
-            font-size: 0.86rem;
-        }
-        .review-card {
-            background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
-            border: 1px solid var(--line);
-            border-radius: 24px;
-            padding: 1.15rem 1.2rem;
-            box-shadow: 0 18px 34px rgba(20, 36, 64, 0.06);
-            height: 100%;
-        }
-        .review-title {
-            color: var(--ink);
-            font-size: 1.4rem;
-            font-weight: 750;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.9rem;
-        }
-        .review-list {
-            margin: 0;
-            padding-left: 1.15rem;
-            color: var(--ink);
-        }
-        .review-list li {
-            margin-bottom: 0.8rem;
-            line-height: 1.65;
-        }
         div[data-testid="stForm"] {
             background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,250,255,0.96));
             border: 1px solid var(--line);
             border-radius: 28px;
             padding: 1.15rem 1.15rem 0.4rem 1.15rem;
             box-shadow: 0 22px 48px rgba(20, 36, 64, 0.10);
+        }
+        div[data-testid="stMetric"] {
+            background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 1rem 1rem 0.9rem 1rem;
+            box-shadow: 0 16px 30px rgba(20, 36, 64, 0.06);
+        }
+        div[data-testid="stMetricLabel"] {
+            color: var(--muted) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        div[data-testid="stMetricValue"] {
+            color: var(--ink) !important;
+            font-weight: 750 !important;
         }
         label, .stMarkdown p, .stCaption, .stText {
             color: var(--ink);
@@ -463,6 +445,11 @@ def inject_styles():
         div[data-baseweb="input"] svg {
             fill: var(--muted) !important;
         }
+        div[data-baseweb="select"] span,
+        div[data-baseweb="select"] div,
+        div[data-baseweb="select"] input {
+            color: var(--ink) !important;
+        }
         div[data-testid="stForm"] button[kind="secondaryFormSubmit"] {
             background: linear-gradient(135deg, var(--accent), #1e58cb) !important;
             color: #ffffff !important;
@@ -472,6 +459,10 @@ def inject_styles():
             font-weight: 700 !important;
             letter-spacing: 0.01em;
             box-shadow: 0 16px 32px rgba(47, 111, 237, 0.24);
+        }
+        div[data-testid="stForm"] button[kind="secondaryFormSubmit"] p,
+        div[data-testid="stForm"] button[kind="secondaryFormSubmit"] span {
+            color: #ffffff !important;
         }
         div[data-testid="stForm"] button[kind="secondaryFormSubmit"]:hover {
             background: linear-gradient(135deg, #245fd8, #174cad) !important;
@@ -511,7 +502,7 @@ def inject_styles():
         }
         @media (max-width: 900px) {
             .kpi-strip,
-            .metric-grid {
+            .kpi-strip {
                 grid-template-columns: 1fr;
             }
             .form-heading {
@@ -565,33 +556,17 @@ def render_hero(reference_df: pd.DataFrame):
 
 
 def render_sidebar_notes(reference_df: pd.DataFrame):
-    st.markdown('<div class="panel-card">', unsafe_allow_html=True)
-    st.markdown('<div class="section-label">Benchmarks</div>', unsafe_allow_html=True)
-    st.markdown(
-        f"""
-        <div class="small-note">
-            Stronger profiles in this dataset generally combine a credit score above
-            <b>{int(reference_df["Credit_Score"].quantile(0.75))}</b>,
-            a DTI ratio below <b>{reference_df["DTI_Ratio"].quantile(0.25):.2f}</b>,
-            and savings above <b>{int(reference_df["Savings"].quantile(0.50)):,}</b>.
-        </div>
-        """,
-        unsafe_allow_html=True,
+    benchmark_copy = (
+        f"Stronger profiles in this dataset generally combine a credit score above "
+        f"<b>{int(reference_df['Credit_Score'].quantile(0.75))}</b>, a DTI ratio below "
+        f"<b>{reference_df['DTI_Ratio'].quantile(0.25):.2f}</b>, and savings above "
+        f"<b>{int(reference_df['Savings'].quantile(0.50)):,}</b>."
     )
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    st.markdown('<div class="panel-card">', unsafe_allow_html=True)
-    st.markdown('<div class="section-label">What Changed</div>', unsafe_allow_html=True)
-    st.markdown(
-        """
-        <div class="small-note">
-            This version adds profile benchmarking, affordability ratios, confidence labeling,
-            and a clearer review of strengths and watchouts around the prediction.
-        </div>
-        """,
-        unsafe_allow_html=True,
+    update_copy = (
+        "This dashboard now emphasizes benchmark clarity, cleaner underwriting signals, "
+        "and a more structured decision-review layout."
     )
-    st.markdown("</div>", unsafe_allow_html=True)
+    return benchmark_copy, update_copy
 
 
 def render_result_banner(prediction: int, probability: float, confidence_label: str):
@@ -613,26 +588,16 @@ def render_result_banner(prediction: int, probability: float, confidence_label: 
     )
 
 
-def render_metric_cards(analysis: dict, probability: float):
-    metrics = [
-        ("Approval Probability", f"{probability * 100:.1f}%", "Model confidence outcome"),
-        ("Total Household Income", f"{analysis['total_income']:,.0f}", "Applicant plus coapplicant"),
-        ("Collateral Coverage", f"{analysis['collateral_cover']:.2f}x", "Collateral to loan ratio"),
-        ("Savings Buffer", f"{analysis['savings_to_loan']:.2f}x", "Savings relative to loan"),
-    ]
-    metric_html = "".join(
-        [
-            f"""
-            <div class="metric-card">
-                <div class="metric-label">{label}</div>
-                <div class="metric-value">{value}</div>
-                <div class="metric-foot">{foot}</div>
-            </div>
-            """
-            for label, value, foot in metrics
-        ]
+def render_note_card(title: str, body: str):
+    st.markdown(
+        f"""
+        <div class="note-card">
+            <div class="section-label">{html.escape(title)}</div>
+            <div class="small-note">{body}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
-    st.markdown(f'<div class="metric-grid">{metric_html}</div>', unsafe_allow_html=True)
 
 
 def render_signal_pills(strengths: list[str], watchouts: list[str]):
@@ -654,11 +619,11 @@ def render_signal_pills(strengths: list[str], watchouts: list[str]):
 
 
 def render_review_card(title: str, items: list[str]):
-    items_html = "".join([f"<li>{item}</li>" for item in items])
+    items_html = "".join([f"<li>{html.escape(item)}</li>" for item in items])
     st.markdown(
         f"""
-        <div class="review-card">
-            <div class="review-title">{title}</div>
+        <div class="note-card">
+            <div class="review-title">{html.escape(title)}</div>
             <ul class="review-list">{items_html}</ul>
         </div>
         """,
@@ -682,105 +647,105 @@ def main():
     scaler = artifacts["scaler"]
 
     render_hero(reference_df)
+    benchmark_copy, update_copy = render_sidebar_notes(reference_df)
+    info_col1, info_col2 = st.columns(2, gap="large")
+    with info_col1:
+        render_note_card("Benchmarks", benchmark_copy)
+    with info_col2:
+        render_note_card("Decision Lens", update_copy)
 
-    layout_left, layout_right = st.columns([1.5, 0.8], gap="large")
-
-    with layout_right:
-        render_sidebar_notes(reference_df)
-
-    with layout_left:
-        st.markdown(
-            """
-            <div class="form-heading">
-                <div class="title">Applicant Profile</div>
-                <div class="sub">
-                    Enter the borrower details below to generate a cleaner underwriting summary
-                    with benchmarks, affordability signals, and decision confidence.
-                </div>
+    st.markdown(
+        """
+        <div class="form-heading">
+            <div class="title">Applicant Profile</div>
+            <div class="sub">
+                Enter the borrower details below to generate a cleaner underwriting summary
+                with benchmarks, affordability signals, and decision confidence.
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        with st.form("loan_prediction_form"):
-            financial_col, profile_col = st.columns(2, gap="large")
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    with st.form("loan_prediction_form"):
+        financial_col, profile_col = st.columns(2, gap="large")
 
-            with financial_col:
-                st.markdown("#### Financial Snapshot")
-                applicant_income = st.number_input(
-                    "Applicant Income",
-                    min_value=0,
-                    value=DEFAULTS["Applicant_Income"],
-                    step=100,
-                )
-                coapplicant_income = st.number_input(
-                    "Coapplicant Income",
-                    min_value=0,
-                    value=DEFAULTS["Coapplicant_Income"],
-                    step=100,
-                )
-                loan_amount = st.number_input(
-                    "Loan Amount",
-                    min_value=0,
-                    value=DEFAULTS["Loan_Amount"],
-                    step=100,
-                )
-                savings = st.number_input(
-                    "Savings",
-                    min_value=0,
-                    value=DEFAULTS["Savings"],
-                    step=100,
-                )
-                collateral_value = st.number_input(
-                    "Collateral Value",
-                    min_value=0,
-                    value=DEFAULTS["Collateral_Value"],
-                    step=100,
-                )
-                dti_ratio = st.number_input(
-                    "DTI Ratio",
-                    min_value=0.0,
-                    max_value=1.0,
-                    value=float(DEFAULTS["DTI_Ratio"]),
-                    step=0.01,
-                    format="%.2f",
-                )
+        with financial_col:
+            st.markdown("#### Financial Snapshot")
+            applicant_income = st.number_input(
+                "Applicant Income",
+                min_value=0,
+                value=DEFAULTS["Applicant_Income"],
+                step=100,
+            )
+            coapplicant_income = st.number_input(
+                "Coapplicant Income",
+                min_value=0,
+                value=DEFAULTS["Coapplicant_Income"],
+                step=100,
+            )
+            loan_amount = st.number_input(
+                "Loan Amount",
+                min_value=0,
+                value=DEFAULTS["Loan_Amount"],
+                step=100,
+            )
+            savings = st.number_input(
+                "Savings",
+                min_value=0,
+                value=DEFAULTS["Savings"],
+                step=100,
+            )
+            collateral_value = st.number_input(
+                "Collateral Value",
+                min_value=0,
+                value=DEFAULTS["Collateral_Value"],
+                step=100,
+            )
+            dti_ratio = st.number_input(
+                "DTI Ratio",
+                min_value=0.0,
+                max_value=1.0,
+                value=float(DEFAULTS["DTI_Ratio"]),
+                step=0.01,
+                format="%.2f",
+            )
 
-            with profile_col:
-                st.markdown("#### Profile Details")
-                age = st.number_input("Age", min_value=18, max_value=100, value=DEFAULTS["Age"])
-                dependents = st.number_input(
-                    "Dependents", min_value=0, max_value=10, value=DEFAULTS["Dependents"]
-                )
-                credit_score = st.number_input(
-                    "Credit Score", min_value=300, max_value=900, value=DEFAULTS["Credit_Score"]
-                )
-                existing_loans = st.number_input(
-                    "Existing Loans",
-                    min_value=0,
-                    max_value=20,
-                    value=DEFAULTS["Existing_Loans"],
-                )
-                loan_term = st.selectbox(
-                    "Loan Term (months)",
-                    LOAN_TERM_OPTIONS,
-                    index=LOAN_TERM_OPTIONS.index(DEFAULTS["Loan_Term"]),
-                )
-                employment_status = st.selectbox(
-                    "Employment Status", EMPLOYMENT_OPTIONS, index=1
-                )
+        with profile_col:
+            st.markdown("#### Profile Details")
+            age = st.number_input("Age", min_value=18, max_value=100, value=DEFAULTS["Age"])
+            dependents = st.number_input(
+                "Dependents", min_value=0, max_value=10, value=DEFAULTS["Dependents"]
+            )
+            credit_score = st.number_input(
+                "Credit Score", min_value=300, max_value=900, value=DEFAULTS["Credit_Score"]
+            )
+            existing_loans = st.number_input(
+                "Existing Loans",
+                min_value=0,
+                max_value=20,
+                value=DEFAULTS["Existing_Loans"],
+            )
+            loan_term = st.selectbox(
+                "Loan Term (months)",
+                LOAN_TERM_OPTIONS,
+                index=LOAN_TERM_OPTIONS.index(DEFAULTS["Loan_Term"]),
+            )
+            employment_status = st.selectbox(
+                "Employment Status", EMPLOYMENT_OPTIONS, index=1
+            )
 
-            category_col1, category_col2, category_col3 = st.columns(3)
-            with category_col1:
-                marital_status = st.selectbox("Marital Status", MARITAL_OPTIONS)
-                education_level = st.selectbox("Education Level", EDUCATION_OPTIONS)
-            with category_col2:
-                loan_purpose = st.selectbox("Loan Purpose", LOAN_PURPOSE_OPTIONS)
-                property_area = st.selectbox("Property Area", PROPERTY_AREA_OPTIONS, index=1)
-            with category_col3:
-                gender = st.selectbox("Gender", GENDER_OPTIONS, index=1)
-                employer_category = st.selectbox("Employer Category", EMPLOYER_OPTIONS, index=3)
+        category_col1, category_col2, category_col3 = st.columns(3)
+        with category_col1:
+            marital_status = st.selectbox("Marital Status", MARITAL_OPTIONS)
+            education_level = st.selectbox("Education Level", EDUCATION_OPTIONS)
+        with category_col2:
+            loan_purpose = st.selectbox("Loan Purpose", LOAN_PURPOSE_OPTIONS)
+            property_area = st.selectbox("Property Area", PROPERTY_AREA_OPTIONS, index=1)
+        with category_col3:
+            gender = st.selectbox("Gender", GENDER_OPTIONS, index=1)
+            employer_category = st.selectbox("Employer Category", EMPLOYER_OPTIONS, index=3)
 
-            submitted = st.form_submit_button("Run Decision Analysis", use_container_width=True)
+        submitted = st.form_submit_button("Run Decision Analysis", use_container_width=True)
 
     if not submitted:
         return
@@ -818,7 +783,19 @@ def main():
 
     st.markdown("### Decision Review")
     render_result_banner(prediction, approval_probability, analysis["confidence_label"])
-    render_metric_cards(analysis, approval_probability)
+    metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4, gap="large")
+    with metric_col1:
+        st.metric("Approval Probability", f"{approval_probability * 100:.1f}%")
+        st.caption("Model confidence outcome")
+    with metric_col2:
+        st.metric("Total Household Income", f"{analysis['total_income']:,.0f}")
+        st.caption("Applicant plus coapplicant")
+    with metric_col3:
+        st.metric("Collateral Coverage", f"{analysis['collateral_cover']:.2f}x")
+        st.caption("Collateral to loan ratio")
+    with metric_col4:
+        st.metric("Savings Buffer", f"{analysis['savings_to_loan']:.2f}x")
+        st.caption("Savings relative to loan")
 
     overview_tab, benchmark_tab, input_tab = st.tabs(
         ["Overview", "Benchmarks", "Model Input"]
