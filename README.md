@@ -120,14 +120,6 @@ This project is a good example of practical ML deployment because it combines:
 
 It is useful both as a learning project and as a starter template for structured-decision ML apps.
 
-## Future Improvements
-
-- add model comparison metrics and validation results to the README
-- include charts for benchmark visualization in the app
-- store the full preprocessing pipeline in one serialized object
-- add automated tests for feature alignment and prediction flow
-- deploy the app publicly on Streamlit Community Cloud or another hosting platform
-
 ## Author
 
 Built by Kartik Goyal as an end-to-end machine learning and Streamlit project.
