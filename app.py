@@ -30,19 +30,6 @@ DEFAULTS = {
     "Loan_Term": 48,
 }
 
-NUMERIC_REFERENCE_COLUMNS = [
-    "Applicant_Income",
-    "Coapplicant_Income",
-    "Credit_Score",
-    "DTI_Ratio",
-    "Savings",
-    "Collateral_Value",
-    "Loan_Amount",
-    "Existing_Loans",
-    "Age",
-]
-
-
 @st.cache_resource
 def load_artifacts():
     return {
@@ -211,65 +198,87 @@ def inject_styles():
         """
         <style>
         :root {
-            --bg: #f5efe2;
-            --panel: rgba(255, 252, 245, 0.88);
-            --ink: #1f2a1f;
-            --muted: #5d665a;
-            --line: rgba(38, 54, 38, 0.12);
-            --gold: #c88f2b;
-            --forest: #234b3b;
-            --success: #1f7a4c;
-            --danger: #a5452d;
+            --bg: #edf3fa;
+            --panel: rgba(255, 255, 255, 0.92);
+            --panel-strong: #ffffff;
+            --ink: #162033;
+            --muted: #5f6c84;
+            --line: rgba(23, 37, 61, 0.10);
+            --line-strong: rgba(23, 37, 61, 0.16);
+            --accent: #2f6fed;
+            --accent-soft: rgba(47, 111, 237, 0.12);
+            --navy: #13233f;
+            --navy-soft: #1b3158;
+            --success: #0f8a5f;
+            --success-soft: rgba(15, 138, 95, 0.10);
+            --danger: #cb4f3f;
+            --danger-soft: rgba(203, 79, 63, 0.10);
         }
         .stApp {
             background:
-                radial-gradient(circle at top left, rgba(200, 143, 43, 0.18), transparent 34%),
-                radial-gradient(circle at top right, rgba(35, 75, 59, 0.20), transparent 28%),
-                linear-gradient(180deg, #f6f0e4 0%, #efe7d5 100%);
+                radial-gradient(circle at top left, rgba(47, 111, 237, 0.18), transparent 28%),
+                radial-gradient(circle at top right, rgba(15, 138, 95, 0.10), transparent 22%),
+                linear-gradient(180deg, #f4f8fc 0%, #e9eff7 48%, #eef3fa 100%);
             color: var(--ink);
         }
         .block-container {
-            max-width: 1120px;
-            padding-top: 2.2rem;
+            max-width: 1180px;
+            padding-top: 2rem;
             padding-bottom: 3rem;
         }
         h1, h2, h3 {
             color: var(--ink);
-            font-family: Georgia, "Times New Roman", serif;
+            font-family: "Avenir Next", "Segoe UI", sans-serif;
             letter-spacing: -0.02em;
+            font-weight: 700;
+        }
+        h4 {
+            color: var(--ink);
+            font-family: "Avenir Next", "Segoe UI", sans-serif;
+            letter-spacing: -0.02em;
+            font-weight: 650;
         }
         .hero-card, .panel-card {
             background: var(--panel);
             border: 1px solid var(--line);
-            border-radius: 24px;
-            box-shadow: 0 18px 40px rgba(54, 50, 36, 0.10);
-            backdrop-filter: blur(12px);
+            border-radius: 26px;
+            box-shadow: 0 22px 50px rgba(20, 36, 64, 0.08);
         }
         .hero-card {
-            padding: 1.6rem 1.8rem;
-            margin-bottom: 1.2rem;
+            background:
+                linear-gradient(135deg, rgba(22, 32, 51, 0.98), rgba(27, 49, 88, 0.95)),
+                linear-gradient(180deg, rgba(47, 111, 237, 0.18), transparent);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1.8rem 1.9rem;
+            margin-bottom: 1.4rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(17, 27, 46, 0.24);
         }
         .panel-card {
-            padding: 1rem 1.2rem;
+            padding: 1.15rem 1.2rem;
             margin-bottom: 1rem;
+            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,251,255,0.94));
         }
         .eyebrow {
             text-transform: uppercase;
             letter-spacing: 0.18em;
             font-size: 0.74rem;
-            color: var(--forest);
+            color: rgba(198, 220, 255, 0.78);
             font-weight: 700;
         }
         .hero-title {
-            font-size: 2.2rem;
+            color: #ffffff;
+            font-size: 2.3rem;
             line-height: 1.05;
             margin: 0.35rem 0 0.6rem 0;
         }
         .hero-copy {
-            color: var(--muted);
+            color: rgba(232, 239, 251, 0.82);
             font-size: 1rem;
             line-height: 1.6;
             margin: 0;
+            max-width: 760px;
         }
         .kpi-strip {
             display: grid;
@@ -278,19 +287,20 @@ def inject_styles():
             margin-top: 1.25rem;
         }
         .kpi-chip {
-            background: rgba(255,255,255,0.72);
-            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.10);
             border-radius: 18px;
             padding: 0.9rem 1rem;
+            backdrop-filter: blur(8px);
         }
         .kpi-label {
-            color: var(--muted);
+            color: rgba(212, 225, 247, 0.72);
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.08em;
         }
         .kpi-value {
-            color: var(--forest);
+            color: #ffffff;
             font-size: 1.35rem;
             font-weight: 700;
             margin-top: 0.2rem;
@@ -300,26 +310,28 @@ def inject_styles():
             font-weight: 700;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: var(--forest);
+            color: var(--accent);
             margin-bottom: 0.5rem;
         }
         .callout {
-            border-radius: 22px;
-            padding: 1rem 1.1rem;
-            margin-bottom: 1rem;
+            border-radius: 24px;
+            padding: 1.15rem 1.2rem;
+            margin-bottom: 1.1rem;
             border: 1px solid transparent;
+            box-shadow: 0 16px 34px rgba(20, 36, 64, 0.08);
         }
         .callout.success {
-            background: rgba(31, 122, 76, 0.10);
-            border-color: rgba(31, 122, 76, 0.16);
+            background: linear-gradient(180deg, rgba(15, 138, 95, 0.10), rgba(255,255,255,0.96));
+            border-color: rgba(15, 138, 95, 0.16);
         }
         .callout.danger {
-            background: rgba(165, 69, 45, 0.10);
-            border-color: rgba(165, 69, 45, 0.16);
+            background: linear-gradient(180deg, rgba(203, 79, 63, 0.10), rgba(255,255,255,0.96));
+            border-color: rgba(203, 79, 63, 0.16);
         }
         .callout-title {
             font-weight: 700;
             font-size: 1.1rem;
+            color: var(--ink);
         }
         .callout-copy {
             margin-top: 0.35rem;
@@ -329,38 +341,187 @@ def inject_styles():
             display: inline-block;
             margin-right: 0.4rem;
             margin-bottom: 0.5rem;
-            padding: 0.4rem 0.7rem;
+            padding: 0.48rem 0.78rem;
             border-radius: 999px;
-            background: rgba(255,255,255,0.72);
-            border: 1px solid var(--line);
+            background: linear-gradient(180deg, #ffffff, #f7faff);
+            border: 1px solid var(--line-strong);
             font-size: 0.88rem;
+            color: var(--ink);
+            box-shadow: 0 8px 16px rgba(20, 36, 64, 0.04);
         }
         .small-note {
             color: var(--muted);
-            font-size: 0.88rem;
-            line-height: 1.5;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
-        div[data-testid="stMetric"] {
-            background: rgba(255,255,255,0.72);
+        .form-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 0 0.8rem 0;
+        }
+        .form-heading .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+        }
+        .form-heading .sub {
+            font-size: 0.92rem;
+            color: var(--muted);
+            max-width: 420px;
+            text-align: right;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.9rem;
+            margin: 0.2rem 0 1rem 0;
+        }
+        .metric-card {
+            background: linear-gradient(180deg, #ffffff 0%, #f6f9fd 100%);
             border: 1px solid var(--line);
-            padding: 0.9rem 1rem;
-            border-radius: 18px;
+            border-radius: 22px;
+            padding: 1rem 1.05rem;
+            min-height: 112px;
+            box-shadow: 0 18px 36px rgba(20, 36, 64, 0.07);
         }
-        div[data-testid="stForm"] {
-            background: rgba(255, 252, 245, 0.74);
+        .metric-card .metric-label {
+            color: var(--muted);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+        }
+        .metric-card .metric-value {
+            color: var(--ink);
+            font-size: 1.7rem;
+            line-height: 1.1;
+            margin-top: 0.55rem;
+            font-weight: 750;
+            letter-spacing: -0.03em;
+        }
+        .metric-card .metric-foot {
+            margin-top: 0.55rem;
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+        .review-card {
+            background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
             border: 1px solid var(--line);
             border-radius: 24px;
-            padding: 1rem 1rem 0.2rem 1rem;
-            box-shadow: 0 18px 40px rgba(54, 50, 36, 0.08);
+            padding: 1.15rem 1.2rem;
+            box-shadow: 0 18px 34px rgba(20, 36, 64, 0.06);
+            height: 100%;
+        }
+        .review-title {
+            color: var(--ink);
+            font-size: 1.4rem;
+            font-weight: 750;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.9rem;
+        }
+        .review-list {
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--ink);
+        }
+        .review-list li {
+            margin-bottom: 0.8rem;
+            line-height: 1.65;
+        }
+        div[data-testid="stForm"] {
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,250,255,0.96));
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            padding: 1.15rem 1.15rem 0.4rem 1.15rem;
+            box-shadow: 0 22px 48px rgba(20, 36, 64, 0.10);
+        }
+        label, .stMarkdown p, .stCaption, .stText {
+            color: var(--ink);
+        }
+        div[data-testid="stNumberInput"] label,
+        div[data-testid="stSelectbox"] label,
+        div[data-testid="stTextInput"] label,
+        div[data-testid="stMarkdownContainer"] p {
+            color: var(--ink) !important;
+        }
+        div[data-baseweb="input"],
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="base-input"] {
+            background: #f8fbff !important;
+            border: 1px solid var(--line-strong) !important;
+            border-radius: 16px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+        div[data-baseweb="input"] input,
+        div[data-baseweb="select"] input {
+            color: var(--ink) !important;
+            font-weight: 600 !important;
+        }
+        div[data-baseweb="select"] svg,
+        div[data-baseweb="input"] svg {
+            fill: var(--muted) !important;
+        }
+        div[data-testid="stForm"] button[kind="secondaryFormSubmit"] {
+            background: linear-gradient(135deg, var(--accent), #1e58cb) !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 16px !important;
+            min-height: 3.2rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em;
+            box-shadow: 0 16px 32px rgba(47, 111, 237, 0.24);
+        }
+        div[data-testid="stForm"] button[kind="secondaryFormSubmit"]:hover {
+            background: linear-gradient(135deg, #245fd8, #174cad) !important;
+        }
+        div[data-testid="stProgressBar"] > div > div {
+            background: linear-gradient(90deg, var(--accent), #18a36b) !important;
+            border-radius: 999px !important;
+        }
+        div[data-testid="stProgressBar"] > div {
+            background: rgba(22, 32, 51, 0.12) !important;
+            border-radius: 999px !important;
+            height: 0.6rem !important;
         }
         .stTabs [data-baseweb="tab-list"] {
-            gap: 0.4rem;
+            gap: 0.55rem;
+            margin-bottom: 0.7rem;
         }
         .stTabs [data-baseweb="tab"] {
-            background: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.86);
             border-radius: 999px;
-            padding: 0.45rem 0.95rem;
+            padding: 0.5rem 1.05rem;
             border: 1px solid var(--line);
+            color: var(--muted);
+            font-weight: 650;
+        }
+        .stTabs [aria-selected="true"] {
+            background: var(--navy) !important;
+            color: #ffffff !important;
+            border-color: var(--navy) !important;
+            box-shadow: 0 12px 24px rgba(19, 35, 63, 0.18);
+        }
+        [data-testid="stDataFrame"] {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 14px 28px rgba(20, 36, 64, 0.05);
+        }
+        @media (max-width: 900px) {
+            .kpi-strip,
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-heading {
+                display: block;
+            }
+            .form-heading .sub {
+                max-width: none;
+                text-align: left;
+                margin-top: 0.4rem;
+            }
         }
         </style>
         """,
@@ -452,6 +613,28 @@ def render_result_banner(prediction: int, probability: float, confidence_label: 
     )
 
 
+def render_metric_cards(analysis: dict, probability: float):
+    metrics = [
+        ("Approval Probability", f"{probability * 100:.1f}%", "Model confidence outcome"),
+        ("Total Household Income", f"{analysis['total_income']:,.0f}", "Applicant plus coapplicant"),
+        ("Collateral Coverage", f"{analysis['collateral_cover']:.2f}x", "Collateral to loan ratio"),
+        ("Savings Buffer", f"{analysis['savings_to_loan']:.2f}x", "Savings relative to loan"),
+    ]
+    metric_html = "".join(
+        [
+            f"""
+            <div class="metric-card">
+                <div class="metric-label">{label}</div>
+                <div class="metric-value">{value}</div>
+                <div class="metric-foot">{foot}</div>
+            </div>
+            """
+            for label, value, foot in metrics
+        ]
+    )
+    st.markdown(f'<div class="metric-grid">{metric_html}</div>', unsafe_allow_html=True)
+
+
 def render_signal_pills(strengths: list[str], watchouts: list[str]):
     st.markdown('<div class="section-label">Signal Summary</div>', unsafe_allow_html=True)
     if strengths:
@@ -468,6 +651,19 @@ def render_signal_pills(strengths: list[str], watchouts: list[str]):
         )
     if not strengths and not watchouts:
         st.info("No standout strengths or risks were triggered for this profile.")
+
+
+def render_review_card(title: str, items: list[str]):
+    items_html = "".join([f"<li>{item}</li>" for item in items])
+    st.markdown(
+        f"""
+        <div class="review-card">
+            <div class="review-title">{title}</div>
+            <ul class="review-list">{items_html}</ul>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def main():
@@ -493,7 +689,18 @@ def main():
         render_sidebar_notes(reference_df)
 
     with layout_left:
-        st.markdown("### Applicant Profile")
+        st.markdown(
+            """
+            <div class="form-heading">
+                <div class="title">Applicant Profile</div>
+                <div class="sub">
+                    Enter the borrower details below to generate a cleaner underwriting summary
+                    with benchmarks, affordability signals, and decision confidence.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         with st.form("loan_prediction_form"):
             financial_col, profile_col = st.columns(2, gap="large")
 
@@ -611,12 +818,7 @@ def main():
 
     st.markdown("### Decision Review")
     render_result_banner(prediction, approval_probability, analysis["confidence_label"])
-
-    metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
-    metric_col1.metric("Approval Probability", f"{approval_probability * 100:.1f}%")
-    metric_col2.metric("Total Household Income", f"{analysis['total_income']:,.0f}")
-    metric_col3.metric("Collateral Coverage", f"{analysis['collateral_cover']:.2f}x")
-    metric_col4.metric("Savings Buffer", f"{analysis['savings_to_loan']:.2f}x")
+    render_metric_cards(analysis, approval_probability)
 
     overview_tab, benchmark_tab, input_tab = st.tabs(
         ["Overview", "Benchmarks", "Model Input"]
@@ -641,17 +843,13 @@ def main():
 
         summary_left, summary_right = st.columns(2, gap="large")
         with summary_left:
-            st.markdown("#### Analyst Notes")
             notes = analysis["strengths"] or ["Profile is fairly balanced without major standout positives."]
-            for note in notes:
-                st.write(f"• {note}")
+            render_review_card("Analyst Notes", notes)
         with summary_right:
-            st.markdown("#### Review Points")
             review_points = analysis["watchouts"] or [
                 "No obvious outlier risks were triggered from the benchmark rules."
             ]
-            for note in review_points:
-                st.write(f"• {note}")
+            render_review_card("Review Points", review_points)
 
     with benchmark_tab:
         st.markdown("#### Dataset Positioning")
