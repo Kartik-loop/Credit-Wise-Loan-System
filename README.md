@@ -1,58 +1,133 @@
 # Credit-Wise Loan Approval System
 
-An end-to-end supervised machine learning project that predicts whether a loan application is likely to be approved based on applicant details such as income, employment status, credit score, loan amount, and loan purpose.
+A machine learning project and Streamlit dashboard for loan approval prediction. The repository covers the full flow from notebook-based model development to a styled web app that accepts applicant details, runs the saved model, and returns a decision review with confidence, benchmark comparisons, and risk notes.
 
-This project was built to practice the **complete ML workflow** — from data preprocessing and feature handling to model training, evaluation, artifact saving, and deployment using **Streamlit**.
+## Overview
 
----
+This project predicts whether a loan application is likely to be approved using structured applicant data such as:
 
-## Project Overview
+- income
+- employment status
+- credit score
+- existing loans
+- savings
+- collateral value
+- loan amount and term
 
-The goal of this project is to build a machine learning system that can assist in **loan approval prediction** using structured applicant data.
+The repository includes both:
 
-The project includes:
+- a Jupyter notebook for data preparation, feature engineering, training, and artifact export
+- a Streamlit application for interactive prediction and analysis
 
-- Data loading and exploration
-- Data cleaning and preprocessing
-- Handling numerical and categorical features
-- Model training and comparison
-- Saving trained artifacts for reuse
-- A Streamlit web app for interactive predictions
+## Current App Features
 
-This repository is primarily centered around the **Jupyter Notebook workflow**, with the deployed app acting as a lightweight interface for testing the trained model.
+The Streamlit app does more than a simple yes/no prediction. It now includes:
 
----
+- a professional dashboard-style UI
+- aligned preprocessing using saved training artifacts
+- approval probability output
+- affordability metrics such as income-to-loan, savings buffer, and collateral coverage
+- benchmark comparisons against the historical dataset
+- analyst-style strengths and watchouts
+- a model input view showing the exact engineered feature frame sent to the classifier
 
-## Problem Statement
+## ML Workflow
 
-Loan approval decisions depend on multiple applicant-related factors.  
-This project aims to predict the approval status of a loan application using machine learning so that the process can be made faster, more consistent, and more data-driven.
+The model development flow is centered in `Creditwise_loanSystem-Copy1.ipynb`.
 
----
+High-level pipeline:
 
-## Tech Stack
+1. Load and inspect the loan dataset.
+2. Clean missing values using imputers.
+3. Encode categorical variables and transform selected fields.
+4. Create engineered features such as squared credit-score and DTI terms.
+5. Scale the final feature matrix.
+6. Train the classifier and export reusable artifacts.
+7. Use the saved artifacts inside the Streamlit app for inference.
 
-- **Python**
-- **Jupyter Notebook**
-- **Pandas**
-- **NumPy**
-- **Scikit-learn**
-- **Joblib**
-- **Streamlit**
+## Model Artifacts
 
----
+The app relies on these saved files:
+
+- `loan_model.pkl` — trained classifier
+- `num_imputer.pkl` — numerical imputer
+- `cat_imputer.pkl` — categorical imputer
+- `scaler.pkl` — fitted scaler used before prediction
+- `feature_columns.pkl` — final feature schema expected by the model
+
+These artifacts are loaded directly by `app.py`.
 
 ## Repository Structure
 
-```bash
+```text
 Credit-Wise-Loan-System/
-│
-├── Creditwise_loanSystem-Copy1.ipynb   # Main notebook with full ML workflow
-├── app.py                              # Streamlit app
-├── loan_approval_data.csv              # Dataset
-├── loan_model.pkl                      # Trained model
-├── num_imputer.pkl                     # Numerical preprocessing artifact
-├── cat_imputer.pkl                     # Categorical preprocessing artifact
-├── feature_columns.pkl                 # Saved feature schema
-├── requirements.txt                    # Project dependencies
-└── README.md                           # Project documentation
+├── Creditwise_loanSystem-Copy1.ipynb
+├── app.py
+├── loan_approval_data.csv
+├── loan_model.pkl
+├── num_imputer.pkl
+├── cat_imputer.pkl
+├── scaler.pkl
+├── feature_columns.pkl
+├── requirements.txt
+└── README.md
+```
+
+## Tech Stack
+
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- Joblib
+- Streamlit
+- Jupyter Notebook
+
+## Run Locally
+
+1. Clone the repository.
+2. Move into the project folder.
+3. Install dependencies.
+4. Start the Streamlit app.
+
+```bash
+git clone https://github.com/Kartik-loop/Credit-Wise-Loan-System.git
+cd Credit-Wise-Loan-System
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+## How Prediction Works In The App
+
+When a user submits the form:
+
+1. The app collects the applicant inputs.
+2. Inputs are converted into the same feature layout used during training.
+3. The feature row is aligned with `feature_columns.pkl`.
+4. The saved scaler transforms the row.
+5. The trained model predicts approval and probability.
+6. The dashboard renders decision metrics, benchmark positioning, and review notes.
+
+## Why This Project Matters
+
+This project is a good example of practical ML deployment because it combines:
+
+- data preprocessing
+- feature engineering
+- model persistence
+- reproducible inference
+- an interactive frontend for end users
+
+It is useful both as a learning project and as a starter template for structured-decision ML apps.
+
+## Future Improvements
+
+- add model comparison metrics and validation results to the README
+- include charts for benchmark visualization in the app
+- store the full preprocessing pipeline in one serialized object
+- add automated tests for feature alignment and prediction flow
+- deploy the app publicly on Streamlit Community Cloud or another hosting platform
+
+## Author
+
+Built by Kartik Goyal as an end-to-end machine learning and Streamlit project.
