@@ -49,11 +49,11 @@ High-level pipeline:
 
 The app relies on these saved files:
 
-- `loan_model.pkl` — trained classifier
-- `num_imputer.pkl` — numerical imputer
-- `cat_imputer.pkl` — categorical imputer
-- `scaler.pkl` — fitted scaler used before prediction
-- `feature_columns.pkl` — final feature schema expected by the model
+- `models/loan_model.pkl` — trained classifier
+- `models/num_imputer.pkl` — numerical imputer
+- `models/cat_imputer.pkl` — categorical imputer
+- `models/scaler.pkl` — fitted scaler used before prediction
+- `models/feature_columns.pkl` — final feature schema expected by the model
 
 These artifacts are loaded directly by `app.py`.
 
@@ -64,11 +64,12 @@ Credit-Wise-Loan-System/
 ├── Creditwise_loanSystem-Copy1.ipynb
 ├── app.py
 ├── loan_approval_data.csv
-├── loan_model.pkl
-├── num_imputer.pkl
-├── cat_imputer.pkl
-├── scaler.pkl
-├── feature_columns.pkl
+├── models/
+│   ├── loan_model.pkl
+│   ├── num_imputer.pkl
+│   ├── cat_imputer.pkl
+│   ├── scaler.pkl
+│   └── feature_columns.pkl
 ├── requirements.txt
 └── README.md
 ```
@@ -103,7 +104,7 @@ When a user submits the form:
 
 1. The app collects the applicant inputs.
 2. Inputs are converted into the same feature layout used during training.
-3. The feature row is aligned with `feature_columns.pkl`.
+3. The feature row is aligned with `models/feature_columns.pkl`.
 4. The saved scaler transforms the row.
 5. The trained model predicts approval and probability.
 6. The dashboard renders decision metrics, benchmark positioning, and review notes.

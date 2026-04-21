@@ -7,6 +7,7 @@ import streamlit as st
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ARTIFACTS_DIR = os.path.join(BASE_DIR, "models")
 
 EMPLOYMENT_OPTIONS = ["Contract", "Salaried", "Self-employed", "Unemployed"]
 MARITAL_OPTIONS = ["Married", "Single"]
@@ -34,9 +35,9 @@ DEFAULTS = {
 @st.cache_resource
 def load_artifacts():
     return {
-        "model": joblib.load(os.path.join(BASE_DIR, "loan_model.pkl")),
-        "scaler": joblib.load(os.path.join(BASE_DIR, "scaler.pkl")),
-        "feature_columns": joblib.load(os.path.join(BASE_DIR, "feature_columns.pkl")),
+        "model": joblib.load(os.path.join(ARTIFACTS_DIR, "loan_model.pkl")),
+        "scaler": joblib.load(os.path.join(ARTIFACTS_DIR, "scaler.pkl")),
+        "feature_columns": joblib.load(os.path.join(ARTIFACTS_DIR, "feature_columns.pkl")),
     }
 
 
